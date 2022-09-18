@@ -3,35 +3,58 @@ package ru.kata.spring.boot_security.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.entity.User;
+import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 @Controller
+@RequestMapping("/admin")
 public class AdminController {
 
-    private UserService userService;
+    private final UserService userService;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public void setUserService(UserService userService) {
+    public AdminController(UserService userService, RoleRepository roleRepository) {
         this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
-    @GetMapping("/admin")
-    public String userList(Model model) {
-        model.addAttribute("usersList", userService.findAllUsers());
-        return "admin";
+    @GetMapping
+    public String index(Model model) {
+        model.addAttribute("users", userService.listUsers());
+        return "admin/index";
     }
 
-    @PostMapping("/admin")
-    public String deleteUser(@RequestParam(required = true, defaultValue = "") Long userId
-            , @RequestParam(required = true, defaultValue = "") String action
-            , Model model) {
-        if (action.equals("delete")) {
-            userService.deleteUser(userId);
-        }
+    @GetMapping("/new")
+    public String newUser(@ModelAttribute("user") User user, Model model) {
+        model.addAttribute("listRoles", roleRepository.findAll());
+        return "admin/new";
+    }
+
+    @PostMapping
+    public String create(@ModelAttribute("user") User user) {
+        userService.add(user);
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/{id}")
+    public String edit(Model model, @PathVariable("id") long id) {
+        model.addAttribute("user", userService.getUserByID(id));
+        model.addAttribute("listRoles", roleRepository.findAll());
+        return "admin/edit";
+    }
+
+    @PutMapping("/{id}")
+    public String update(@ModelAttribute("user") User user) {
+        userService.update(user);
+        return "redirect:/admin/";
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable("id") long id) {
+        userService.delete(id);
         return "redirect:/admin";
     }
 }

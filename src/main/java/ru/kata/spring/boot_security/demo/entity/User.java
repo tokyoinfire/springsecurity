@@ -1,64 +1,133 @@
 package ru.kata.spring.boot_security.demo.entity;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
+@NamedEntityGraph(name = "GroupInfo.detail",
+        attributeNodes = @NamedAttributeNode("roles"))
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
+
+    @Column(name = "enabled")
+    private boolean enabled;
+
+    @Column(name = "username")
     private String username;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "password")
     private String password;
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles = new ArrayList<>();
 
     public User() {
     }
 
-    public Long getId() {
+    public User(String username, String city, String phone, String email) {
+        this.enabled = true;
+        this.username = username;
+        this.city = city;
+        this.phone = phone;
+        this.email = email;
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    @Override
+    public String getUsername() {
+        return username;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.getRoles();
+        return getRoles();
     }
 
     @Override
     public String getPassword() {
-        return this.password;
+        return password;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> authorities) {
+        this.roles = authorities;
+    }
+
+    public void addRole(Role role) {
+        roles.add(role);
     }
 
     @Override
-    public String getUsername() {
-        return this.username;
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override
@@ -76,8 +145,4 @@ public class User implements UserDetails {
         return true;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }
