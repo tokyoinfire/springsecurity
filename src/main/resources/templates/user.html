@@ -7,22 +7,22 @@
 <body>
 <label for="username">
     Name:
-    <a th:text="${user.getUsername()}" id="username"></a>
+    <a th:text="${user.username}" id="username"></a>
     <p></p>
 </label>
 <label for="city">
     City:
-    <a th:text="${user.getCity()}" id="city"></a>
+    <a th:text="${user.username}" id="city"></a>
     <p></p>
 </label>
 <label for="phone">
     Phone:
-    <a th:text="${user.getPhone()}" id="phone"></a>
+    <a th:text="${user.phone}" id="phone"></a>
     <p></p>
 </label>
 <label for="email">
     Email:
-    <a th:text="${user.getEmail()}" id="email"></a>
+    <a th:text="${user.email}" id="email"></a>
     <p></p>
 </label>
 <form th:action="@{/logout}" th:method="POST">

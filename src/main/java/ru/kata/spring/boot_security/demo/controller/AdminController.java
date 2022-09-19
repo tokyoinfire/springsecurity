@@ -24,13 +24,13 @@ public class AdminController {
     @GetMapping
     public String index(Model model) {
         model.addAttribute("users", userService.listUsers());
-        return "admin/index";
+        return "/admin/index";
     }
 
     @GetMapping("/new")
     public String newUser(@ModelAttribute("user") User user, Model model) {
         model.addAttribute("listRoles", roleRepository.findAll());
-        return "admin/new";
+        return "/admin/new";
     }
 
     @PostMapping
@@ -43,7 +43,7 @@ public class AdminController {
     public String edit(Model model, @PathVariable("id") long id) {
         model.addAttribute("user", userService.getUserByID(id));
         model.addAttribute("listRoles", roleRepository.findAll());
-        return "admin/edit";
+        return "/admin/edit";
     }
 
     @PutMapping("/{id}")

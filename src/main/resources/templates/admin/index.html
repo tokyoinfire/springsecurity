@@ -21,19 +21,19 @@
     </thead>
     <tbody>
     <tr th:each="user: ${users}">
-        <td><a th:text="${user.getId()}"></a></td>
-        <td><a th:text="${user.isEnabled()}"></a></td>
-        <td><a th:text="${user.getUsername()}"></a></td>
-        <td><a th:text="${user.getCity()}"></a></td>
-        <td><a th:text="${user.getPhone()}"></a></td>
-        <td><a th:text="${user.getEmail()}"></a></td>
+        <td><a th:text="${user.id}"></a></td>
+        <td><a th:text="${user.enabled}"></a></td>
+        <td><a th:text="${user.username}"></a></td>
+        <td><a th:text="${user.city}"></a></td>
+        <td><a th:text="${user.phone}"></a></td>
+        <td><a th:text="${user.email}"></a></td>
         <td>
-            <form th:method="get" th:action="@{/admin/{id}(id=${user.getId()})}" th:object="${user}">
+            <form th:method="get" th:action="@{/admin/{id}(id=${user.id})}" th:object="${user}">
                 <input type="submit" value="Update">
             </form>
         </td>
         <td>
-            <form th:method="delete" th:action="@{/admin/{id}(id=${user.getId()})}" th:object="${user}">
+            <form th:method="delete" th:action="@{/admin/{id}(id=${user.id})}" th:object="${user}">
                 <input type="submit" value="Delete">
             </form>
         </td>
